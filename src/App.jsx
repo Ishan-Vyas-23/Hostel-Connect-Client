@@ -1,0 +1,52 @@
+import { Routes, Route, Navigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import Login from "./pages/Login";
+import Recover from "./pages/Recover";
+import Dashboard from "./pages/Dashboard";
+import MainLayout from "./layouts/MainLayout";
+import SubmitComplaint from "./pages/SubmitComplaint";
+import MyComplaints from "./pages/MyComplaints";
+import Profile from "./pages/Profile";
+import Notifications from "./pages/Notifications";
+
+const App = () => {
+  return (
+    <>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/forgot" element={<Recover />} />
+
+        {/* protected area - wrap with MainLayout so Sidebar + Topbar are shared */}
+        <Route path="/" element={<MainLayout />}>
+          <Route path="dashboard" element={<Dashboard />} />
+          {/* other nested routes render inside <Outlet /> (submit, my-complaints ...) */}
+          <Route path="submit" element={<SubmitComplaint />} />
+          <Route path="my-complaints" element={<MyComplaints />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="notifications" element={<Notifications />} />
+        </Route>
+
+        {/* fallback */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        theme="dark"
+        toastStyle={{
+          backgroundColor: "#faedcd",
+          color: "black",
+        }}
+        progressStyle={{
+          background: "#4FD1C5",
+        }}
+      />
+    </>
+  );
+};
+
+export default App;
