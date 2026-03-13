@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import "../styles/Upvote.css";
+import "../styles/upvote.css";
 
 const UpvoteButton = ({ initialVotes, complaintId }) => {
   const [votes, setVotes] = useState(initialVotes);
@@ -24,7 +24,6 @@ const UpvoteButton = ({ initialVotes, complaintId }) => {
         },
       );
 
-      // backend should return updated vote count
       setVotes(res.data.upvotes);
     } catch (err) {
       console.error("Upvote failed", err);

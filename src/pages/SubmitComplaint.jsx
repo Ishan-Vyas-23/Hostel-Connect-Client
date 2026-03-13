@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-import "../styles/SubmitComplaint.css";
+import "../styles/submitComplaint.css";
 import React from "react";
 import axios from "axios";
 
@@ -16,11 +16,14 @@ const SubmitComplaint = () => {
 
   const fetchUserData = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/users/me/", {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const res = await axios.get(
+        "https://hostel-connect-server.onrender.com/api/users/me/",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       const data = res.data;
 
@@ -53,12 +56,15 @@ const SubmitComplaint = () => {
     }
 
     try {
-      // Later you will integrate axios here
-      await axios.post("http://localhost:3000/api/complaints", form, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      await axios.post(
+        "https://hostel-connect-server.onrender.com/api/complaints",
+        form,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       toast.success("Complaint submitted successfully");
 

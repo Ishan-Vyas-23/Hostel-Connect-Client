@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import "../styles/Recover.css";
+import "../styles/recover.css";
 import axios from "axios";
 
 const Recover = () => {
@@ -19,10 +19,12 @@ const Recover = () => {
     try {
       setLoading(true);
 
-      // later you'll call backend
-      await axios.post("http://localhost:3000/api/auth/forgot-password", {
-        email,
-      });
+      await axios.post(
+        "https://hostel-connect-server.onrender.com/api/auth/forgot-password",
+        {
+          email,
+        },
+      );
 
       await new Promise((r) => setTimeout(r, 800));
 

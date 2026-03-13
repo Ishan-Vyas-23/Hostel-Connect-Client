@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import "../styles/Login.css";
-import logo from "/logo.png"; // put your logo in public/logo.png or adjust path
+import "../styles/login.css";
+import logo from "../../public/logo.png";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
@@ -13,10 +13,17 @@ const Login = () => {
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  React.useEffect(() => {
+    const checkServer = async () => {
+      await fetch("https://hostel-connect-server.onrender.com/health");
+    };
+
+    checkServer();
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // basic validation
     if (!username.trim() || !password) {
       toast.error("Please enter username and password");
       return;
@@ -25,20 +32,19 @@ const Login = () => {
     setLoading(true);
 
     try {
-      // TODO: integrate axios call to your backend here.
-      // Example (uncomment & adjust when backend ready):
-      const res = await axios.post("http://localhost:3000/api/auth/login", {
-        username,
-        password,
-      });
+      const res = await axios.post(
+        "https://hostel-connect-server.onrender.com/api/auth/login",
+        {
+          username,
+          password,
+        },
+      );
       localStorage.setItem("token", res.data.token);
       toast.success("Login successful");
 
-      // For now, simulate success:
       await new Promise((r) => setTimeout(r, 700));
       toast.success("Login successful");
-      // navigate to dashboard or home after login
-      navigate("/dashboard"); // change later to your actual protected route
+      navigate("/dashboard");
     } catch (err) {
       console.error(err);
       toast.error("Login failed. Check credentials or try again.");
@@ -50,7 +56,12 @@ const Login = () => {
   return (
     <div className="login-page">
       <div className="login-card">
-        <img src={logo} alt="HostelConnect logo" className="logo" />
+        <img
+          src={logo}
+          alt="HostelConnect logo"
+          className="logo"
+          style={{ borderRadius: "10px" }}
+        />
         <h1 className="title">Welcome Back</h1>
         <p className="subtitle">Login to access HostelConnect</p>
 

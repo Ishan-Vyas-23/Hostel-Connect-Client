@@ -35,11 +35,14 @@ const MyComplaints = () => {
 
   const fetchComplaints = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/complaints/my", {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const res = await axios.get(
+        "https://hostel-connect-server.onrender.com/api/complaints/my",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       setComplaints(res.data);
     } catch (err) {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import "../styles/Notifications.css";
+import "../styles/notifications.css";
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
@@ -10,11 +10,14 @@ const Notifications = () => {
 
   const fetchNotifications = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/notifications", {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const res = await axios.get(
+        "https://hostel-connect-server.onrender.com/api/notifications",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       setNotifications(res.data);
     } catch (err) {
@@ -31,7 +34,7 @@ const Notifications = () => {
   const markAsRead = async (id) => {
     try {
       await axios.patch(
-        `http://localhost:3000/api/notifications/${id}/read`,
+        `https://hostel-connect-server.onrender.com/api/notifications/${id}/read`,
         {},
         {
           headers: {

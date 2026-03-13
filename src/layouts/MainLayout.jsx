@@ -3,16 +3,20 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import axios from "axios";
 import { Link } from "react-router-dom";
+
 const MainLayout = () => {
   const token = localStorage.getItem("token");
   const [name, setName] = React.useState("");
   const fetchUserData = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/users/me/", {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const res = await axios.get(
+        "https://hostel-connect-server.onrender.com/api/users/me/",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
       const data = res.data;
       setName(data.name);
       console.log(data);
@@ -42,7 +46,6 @@ const MainLayout = () => {
         </header>
 
         <main className="hc-content">
-          {/* nested routes render here */}
           <Outlet />
         </main>
       </div>

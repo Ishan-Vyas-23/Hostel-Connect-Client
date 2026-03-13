@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import "../styles/Profile.css";
+import "../styles/profile.css";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -10,11 +10,14 @@ const Profile = () => {
       try {
         const token = localStorage.getItem("token");
 
-        const res = await axios.get("http://localhost:3000/api/users/me", {
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const res = await axios.get(
+          "https://hostel-connect-server.onrender.com/api/users/me",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        });
+        );
 
         setUser(res.data);
       } catch (err) {
@@ -28,14 +31,13 @@ const Profile = () => {
   if (!user) {
     return <div>Loading profile...</div>;
   }
+  console.log(user);
 
   return (
     <div className="profile-page">
       <h2 className="page-title">Profile</h2>
 
       <div className="profile-grid">
-        {/* Left Card */}
-
         <div className="profile-card">
           <img
             src={
@@ -48,12 +50,10 @@ const Profile = () => {
 
           <h3>{user.name}</h3>
 
-          <p className="student-id">Enrollment: {user.enrollmentNo}</p>
+          <p className="student-id">Enrollment: {user.enrolmentNo}</p>
 
           <button className="edit-btn">Edit Profile</button>
         </div>
-
-        {/* Hostel Details */}
 
         <div className="hostel-card">
           <h3>Hostel Details</h3>

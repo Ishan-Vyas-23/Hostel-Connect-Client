@@ -38,7 +38,9 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchComplaints = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/complaints/");
+        const res = await axios.get(
+          "https://hostel-connect-server.onrender.com/api/complaints/",
+        );
 
         const data = res.data;
 
@@ -76,8 +78,6 @@ const Dashboard = () => {
 
   return (
     <>
-      {/* Stats Cards */}
-
       <section className="hc-cards">
         <div className="card">
           <div className="card-label">Total Complaints</div>
@@ -94,8 +94,6 @@ const Dashboard = () => {
           <div className="card-value">{totals.resolved}</div>
         </div>
       </section>
-
-      {/* Complaints Table */}
 
       <section className="hc-recent">
         <h3>Recent Complaints</h3>
@@ -141,7 +139,6 @@ const Dashboard = () => {
                       />
                     </td>
                   </tr>
-                  {/* Expanded Row */}
 
                   {expandedId === c._id && (
                     <tr className="expanded-row">
