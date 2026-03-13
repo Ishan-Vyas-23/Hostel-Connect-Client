@@ -39,7 +39,7 @@ const Dashboard = () => {
     const fetchComplaints = async () => {
       try {
         const res = await axios.get(
-          "https://hostel-connect-server.onrender.com/api/complaints/",
+          `${import.meta.env.VITE_API_URL}/api/complaints/`,
         );
 
         const data = res.data;

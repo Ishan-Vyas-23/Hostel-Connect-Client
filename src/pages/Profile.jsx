@@ -11,7 +11,7 @@ const Profile = () => {
         const token = localStorage.getItem("token");
 
         const res = await axios.get(
-          "https://hostel-connect-server.onrender.com/api/users/me",
+          `${import.meta.env.VITE_API_URL}/api/users/me`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "../styles/login.css";
-import logo from "../../public/logo.png";
+import logo from "../assets/logo.png";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
@@ -15,7 +15,7 @@ const Login = () => {
 
   React.useEffect(() => {
     const checkServer = async () => {
-      await fetch("https://hostel-connect-server.onrender.com/health");
+      await fetch(`${import.meta.env.VITE_API_URL}/health`);
     };
 
     checkServer();
@@ -33,7 +33,7 @@ const Login = () => {
 
     try {
       const res = await axios.post(
-        "https://hostel-connect-server.onrender.com/api/auth/login",
+        `${import.meta.env.VITE_API_URL}/api/auth/login`,
         {
           username,
           password,

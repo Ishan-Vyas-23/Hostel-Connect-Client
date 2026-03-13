@@ -11,7 +11,7 @@ const Notifications = () => {
   const fetchNotifications = async () => {
     try {
       const res = await axios.get(
-        "https://hostel-connect-server.onrender.com/api/notifications",
+        `${import.meta.env.VITE_API_URL}/api/notifications`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -34,7 +34,7 @@ const Notifications = () => {
   const markAsRead = async (id) => {
     try {
       await axios.patch(
-        `https://hostel-connect-server.onrender.com/api/notifications/${id}/read`,
+        `${import.meta.env.VITE_API_URL}/api/notifications/${id}/read`,
         {},
         {
           headers: {

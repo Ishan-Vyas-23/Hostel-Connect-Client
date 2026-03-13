@@ -17,7 +17,7 @@ const SubmitComplaint = () => {
   const fetchUserData = async () => {
     try {
       const res = await axios.get(
-        "https://hostel-connect-server.onrender.com/api/users/me/",
+        `${import.meta.env.VITE_API_URL}/api/users/me/`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -56,15 +56,11 @@ const SubmitComplaint = () => {
     }
 
     try {
-      await axios.post(
-        "https://hostel-connect-server.onrender.com/api/complaints",
-        form,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/complaints`, form, {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
 
       toast.success("Complaint submitted successfully");
 

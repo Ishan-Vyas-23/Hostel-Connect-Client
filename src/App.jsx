@@ -16,10 +16,8 @@ const App = () => {
         <Route path="/" element={<Login />} />
         <Route path="/forgot" element={<Recover />} />
 
-        {/* protected area - wrap with MainLayout so Sidebar + Topbar are shared */}
         <Route path="/" element={<MainLayout />}>
           <Route path="dashboard" element={<Dashboard />} />
-          {/* other nested routes render inside <Outlet /> (submit, my-complaints ...) */}
           <Route path="submit" element={<SubmitComplaint />} />
           <Route path="my-complaints" element={<MyComplaints />} />
           <Route path="profile" element={<Profile />} />
