@@ -31,7 +31,6 @@ const Profile = () => {
   if (!user) {
     return <div>Loading profile...</div>;
   }
-  console.log(user);
 
   return (
     <div className="profile-page">

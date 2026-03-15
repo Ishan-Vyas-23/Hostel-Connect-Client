@@ -3,10 +3,15 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { AiOutlineLogout } from "react-icons/ai";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const MainLayout = () => {
   const token = localStorage.getItem("token");
   const [name, setName] = React.useState("");
+  const navigate = useNavigate();
+
   const fetchUserData = async () => {
     try {
       const res = await axios.get(
@@ -22,6 +27,16 @@ const MainLayout = () => {
       console.log(data);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const manageLogout = () => {
+    try {
+      localStorage.removeItem("token");
+      toast.success("logged out");
+      navigate("/");
+    } catch (error) {
+      toast.error("logout failed");
     }
   };
 
@@ -42,6 +57,10 @@ const MainLayout = () => {
             <Link to={"/profile"}>
               <button className="admin-btn">{name}</button>
             </Link>
+            <AiOutlineLogout
+              style={{ cursor: "pointer" }}
+              onClick={manageLogout}
+            />
           </div>
         </header>
 

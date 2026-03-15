@@ -74,7 +74,6 @@ const Dashboard = () => {
       setExpandedId(id);
     }
   };
-  console.log(complaints);
 
   return (
     <>
