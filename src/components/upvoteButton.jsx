@@ -15,7 +15,7 @@ const UpvoteButton = ({ initialVotes, complaintId }) => {
       setLoading(true);
 
       const res = await axios.post(
-        `http://localhost:3000/api/upvotes/${complaintId}`,
+        `${import.meta.env.VITE_API_URL}/api/upvotes/${complaintId}`,
         {},
         {
           headers: {
