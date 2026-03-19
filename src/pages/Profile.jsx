@@ -1,9 +1,46 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/profile.css";
+import { toast } from "react-toastify";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
+  const [editing, setEditing] = useState(false);
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleChangePassword = async () => {
+    try {
+      setLoading(true);
+
+      const token = localStorage.getItem("token");
+
+      await axios.put(
+        `${import.meta.env.VITE_API_URL}/api/auth/change-password`,
+        {
+          oldPassword,
+          newPassword,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      toast.success("Password updated successfully");
+
+      setEditing(false);
+      setOldPassword("");
+      setNewPassword("");
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || "Update failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -51,7 +88,47 @@ const Profile = () => {
 
           <p className="student-id">Enrollment: {user.enrolmentNo}</p>
 
-          <button className="edit-btn">Edit Profile</button>
+          {!editing ? (
+            <button className="btn-primary" onClick={() => setEditing(true)}>
+              Edit Profile
+            </button>
+          ) : (
+            <div className="password-box">
+              <div className="form-container">
+                <input
+                  type="password"
+                  className="form-input"
+                  placeholder="Old Password"
+                  value={oldPassword}
+                  onChange={(e) => setOldPassword(e.target.value)}
+                />
+
+                <input
+                  type="password"
+                  className="form-input"
+                  placeholder="New Password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <button
+                    className="btn btn-primary"
+                    onClick={handleChangePassword}
+                  >
+                    Update Password
+                  </button>
+
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => setEditing(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="hostel-card">

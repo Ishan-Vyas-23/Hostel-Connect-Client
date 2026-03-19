@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import React from "react";
+import { toast } from "react-toastify";
 import UpvoteButton from "../components/upvoteButton";
+import { CiEdit } from "react-icons/ci";
+import { MdDelete } from "react-icons/md";
 
 const StatusBadge = ({ status }) => {
   const map = {
@@ -32,6 +34,11 @@ const MyComplaints = () => {
   const [editId, setEditId] = useState(null);
   const [description, setDescription] = useState("");
 
+  const [feedbackOpenId, setFeedbackOpenId] = useState(null);
+  const [feedbackRating, setFeedbackRating] = useState("5");
+  const [feedbackComment, setFeedbackComment] = useState("");
+  const [feedbackSubmittingId, setFeedbackSubmittingId] = useState(null);
+
   const token = localStorage.getItem("token");
 
   const fetchComplaints = async () => {
@@ -44,9 +51,10 @@ const MyComplaints = () => {
           },
         },
       );
+
       setComplaints(res.data);
     } catch (err) {
-      console.error("Fetch failed", err);
+      console.error("Fetch my complaints failed", err);
     }
   };
 
@@ -80,8 +88,10 @@ const MyComplaints = () => {
       setComplaints((prev) => prev.map((c) => (c._id === id ? res.data : c)));
 
       setEditId(null);
+      toast.success("Complaint updated");
     } catch (err) {
       console.error("Update failed", err);
+      toast.error("Update failed");
     }
   };
 
@@ -101,8 +111,61 @@ const MyComplaints = () => {
       );
 
       setComplaints((prev) => prev.filter((c) => c._id !== id));
+      toast.success("Complaint deleted");
     } catch (err) {
       console.error("Delete failed", err);
+      toast.error("Delete failed");
+    }
+  };
+
+  const openFeedbackForm = (c, e) => {
+    e.stopPropagation();
+    if (c.status !== "Resolved") return;
+
+    setFeedbackOpenId(c._id);
+    setFeedbackRating("5");
+    setFeedbackComment("");
+  };
+
+  const handleSubmitFeedback = async (complaintId) => {
+    try {
+      setFeedbackSubmittingId(complaintId);
+
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/feedback/${complaintId}`,
+        {
+          rating: Number(feedbackRating),
+          comment: feedbackComment,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const newFeedback = res.data;
+
+      setComplaints((prev) =>
+        prev.map((c) =>
+          c._id === complaintId
+            ? {
+                ...c,
+                myFeedback: newFeedback,
+              }
+            : c,
+        ),
+      );
+
+      setFeedbackOpenId(null);
+      setFeedbackComment("");
+      setFeedbackRating("5");
+      toast.success("Feedback submitted");
+    } catch (err) {
+      console.error("Feedback submit failed", err);
+      toast.error(err.response?.data?.message || "Feedback submit failed");
+    } finally {
+      setFeedbackSubmittingId(null);
     }
   };
 
@@ -132,19 +195,14 @@ const MyComplaints = () => {
                   style={{ cursor: "pointer" }}
                 >
                   <td>{c.title}</td>
-
                   <td>{c.category}</td>
-
                   <td>
                     <StatusBadge status={c.status} />
                   </td>
-
                   <td>
                     <SeverityBadge severity={c.severity} />
                   </td>
-
                   <td>{new Date(c.createdAt).toLocaleDateString()}</td>
-
                   <td>
                     <UpvoteButton
                       complaintId={c._id}
@@ -154,8 +212,22 @@ const MyComplaints = () => {
                   </td>
 
                   <td onClick={(e) => e.stopPropagation()}>
-                    <button onClick={(e) => startEdit(c, e)}>✏️</button>
-                    <button onClick={(e) => handleDelete(c._id, e)}>🗑️</button>
+                    <button
+                      style={{ borderRadius: "5px" }}
+                      onClick={(e) => startEdit(c, e)}
+                    >
+                      <CiEdit
+                        style={{ fontSize: "1.2rem", cursor: "pointer" }}
+                      />
+                    </button>
+                    <button
+                      style={{ borderRadius: "5px" }}
+                      onClick={(e) => handleDelete(c._id, e)}
+                    >
+                      <MdDelete
+                        style={{ fontSize: "1.2rem", cursor: "pointer" }}
+                      />
+                    </button>
                   </td>
                 </tr>
 
@@ -165,19 +237,28 @@ const MyComplaints = () => {
                       <div className="complaint-details">
                         {editId === c._id ? (
                           <>
-                            <textarea
-                              value={description}
-                              onChange={(e) => setDescription(e.target.value)}
-                              style={{ width: "100%", minHeight: "80px" }}
-                            />
+                            <div className="form-container">
+                              <textarea
+                                className="form-textarea"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                              />
 
-                            <div style={{ marginTop: "10px" }}>
-                              <button onClick={() => handleUpdate(c._id)}>
-                                💾 Save
-                              </button>
-                              <button onClick={() => setEditId(null)}>
-                                ❌ Cancel
-                              </button>
+                              <div style={{ display: "flex", gap: "10px" }}>
+                                <button
+                                  className="btn btn-primary"
+                                  onClick={() => handleUpdate(c._id)}
+                                >
+                                  Save
+                                </button>
+
+                                <button
+                                  className="btn btn-secondary"
+                                  onClick={() => setEditId(null)}
+                                >
+                                  Cancel
+                                </button>
+                              </div>
                             </div>
                           </>
                         ) : (
@@ -186,8 +267,11 @@ const MyComplaints = () => {
                               <strong>Description:</strong> {c.description}
                             </p>
 
-                            <button onClick={(e) => startEdit(c, e)}>
-                              ✏️ Edit Description
+                            <button
+                              className="btn-primary"
+                              onClick={(e) => startEdit(c, e)}
+                            >
+                              Edit Description
                             </button>
                           </>
                         )}
@@ -207,6 +291,87 @@ const MyComplaints = () => {
                             <strong>Resolution:</strong> {c.resolution.text}
                           </p>
                         )}
+
+                        <div style={{ marginTop: "16px" }}>
+                          {c.status === "Resolved" && !c.myFeedback && (
+                            <>
+                              {feedbackOpenId !== c._id ? (
+                                <button
+                                  className="btn-primary"
+                                  onClick={(e) => openFeedbackForm(c, e)}
+                                >
+                                  Give Feedback
+                                </button>
+                              ) : (
+                                <div className="feedback-box">
+                                  <div className="form-container">
+                                    <label>Rating</label>
+
+                                    <select
+                                      className="form-select"
+                                      value={feedbackRating}
+                                      onChange={(e) =>
+                                        setFeedbackRating(e.target.value)
+                                      }
+                                    >
+                                      <option value="1">⭐</option>
+                                      <option value="2">⭐⭐</option>
+                                      <option value="3">⭐⭐⭐</option>
+                                      <option value="4">⭐⭐⭐⭐</option>
+                                      <option value="5">⭐⭐⭐⭐⭐</option>
+                                    </select>
+
+                                    <textarea
+                                      className="form-textarea"
+                                      placeholder="Write your feedback..."
+                                      value={feedbackComment}
+                                      onChange={(e) =>
+                                        setFeedbackComment(e.target.value)
+                                      }
+                                    />
+
+                                    <button
+                                      className="btn btn-primary"
+                                      onClick={() =>
+                                        handleSubmitFeedback(c._id)
+                                      }
+                                      disabled={feedbackSubmittingId === c._id}
+                                    >
+                                      {feedbackSubmittingId === c._id
+                                        ? "Submitting..."
+                                        : "Submit Feedback"}
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
+                            </>
+                          )}
+
+                          {c.myFeedback && (
+                            <div style={{ marginTop: "12px" }}>
+                              <p>
+                                <strong>Your Feedback:</strong>
+                              </p>
+                              <p>Rating: {c.myFeedback.rating}/5</p>
+                              <p>
+                                Comment: {c.myFeedback.comment || "No comment"}
+                              </p>
+                              <p>
+                                Submitted on:{" "}
+                                {new Date(
+                                  c.myFeedback.createdAt,
+                                ).toLocaleString()}
+                              </p>
+                            </div>
+                          )}
+
+                          {c.status !== "Resolved" && !c.myFeedback && (
+                            <p style={{ marginTop: "10px" }}>
+                              Feedback becomes available after the complaint is
+                              resolved.
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </td>
                   </tr>

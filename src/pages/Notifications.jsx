@@ -43,7 +43,6 @@ const Notifications = () => {
         },
       );
 
-      // update local state
       setNotifications((prev) =>
         prev.map((n) => (n._id === id ? { ...n, read: true } : n)),
       );
@@ -55,6 +54,7 @@ const Notifications = () => {
   if (loading) {
     return <div>Loading notifications...</div>;
   }
+  console.log(notifications);
 
   return (
     <div className="notifications-page">

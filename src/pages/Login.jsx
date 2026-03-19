@@ -5,6 +5,8 @@ import "../styles/login.css";
 import logo from "../assets/logo.png";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { FaRegEye } from "react-icons/fa6";
+import { FaRegEyeSlash } from "react-icons/fa";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -41,9 +43,7 @@ const Login = () => {
       );
       localStorage.setItem("token", res.data.token);
       toast.success("Login successful");
-
       await new Promise((r) => setTimeout(r, 700));
-      toast.success("Login successful");
       navigate("/dashboard");
     } catch (err) {
       console.error(err);
@@ -92,7 +92,7 @@ const Login = () => {
               onClick={() => setShowPass((s) => !s)}
               aria-label={showPass ? "Hide password" : "Show password"}
             >
-              {showPass ? "🙈" : "👁️"}
+              {showPass ? <FaRegEye /> : <FaRegEyeSlash />}
             </button>
           </div>
 

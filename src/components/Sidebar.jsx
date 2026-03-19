@@ -2,7 +2,9 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import "../styles/dashboard.css";
 
-const Sidebar = () => {
+const Sidebar = ({ role }) => {
+  const canManage = ["admin", "warden", "staff"].includes(role);
+
   return (
     <aside className="hc-sidebar">
       <div className="hc-brand">HostelConnect</div>
@@ -16,6 +18,7 @@ const Sidebar = () => {
         >
           Dashboard
         </NavLink>
+
         <NavLink
           to="/submit"
           className={({ isActive }) =>
@@ -24,6 +27,7 @@ const Sidebar = () => {
         >
           Submit Complaint
         </NavLink>
+
         <NavLink
           to="/my-complaints"
           className={({ isActive }) =>
@@ -32,6 +36,29 @@ const Sidebar = () => {
         >
           My Complaints
         </NavLink>
+
+        {canManage && (
+          <>
+            <NavLink
+              to="/manage-complaints"
+              className={({ isActive }) =>
+                isActive ? "hc-nav-item active" : "hc-nav-item"
+              }
+            >
+              Manage Complaints
+            </NavLink>
+
+            <NavLink
+              to="/feedbacks"
+              className={({ isActive }) =>
+                isActive ? "hc-nav-item active" : "hc-nav-item"
+              }
+            >
+              Feedbacks
+            </NavLink>
+          </>
+        )}
+
         <NavLink
           to="/notifications"
           className={({ isActive }) =>
@@ -40,6 +67,7 @@ const Sidebar = () => {
         >
           Notifications
         </NavLink>
+
         <NavLink
           to="/profile"
           className={({ isActive }) =>

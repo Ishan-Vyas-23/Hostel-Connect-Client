@@ -8,6 +8,8 @@ import SubmitComplaint from "./pages/SubmitComplaint";
 import MyComplaints from "./pages/MyComplaints";
 import Profile from "./pages/Profile";
 import Notifications from "./pages/Notifications";
+import ManageComplaints from "./pages/ManageComplaints";
+import Feedbacks from "./pages/Feedbacks";
 
 const App = () => {
   return (
@@ -22,6 +24,8 @@ const App = () => {
           <Route path="my-complaints" element={<MyComplaints />} />
           <Route path="profile" element={<Profile />} />
           <Route path="notifications" element={<Notifications />} />
+          <Route path="/manage-complaints" element={<ManageComplaints />} />
+          <Route path="/feedbacks" element={<Feedbacks />} />
         </Route>
 
         {/* fallback */}
