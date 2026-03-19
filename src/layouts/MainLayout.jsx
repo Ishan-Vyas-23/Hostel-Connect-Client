@@ -24,7 +24,6 @@ const MainLayout = () => {
       );
       const data = res.data;
       setName(data.name);
-      console.log(data);
     } catch (error) {
       console.log(error);
     }

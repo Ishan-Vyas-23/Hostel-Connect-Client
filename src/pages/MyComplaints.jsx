@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import React from "react";
 import UpvoteButton from "../components/upvoteButton";
 
 const StatusBadge = ({ status }) => {
@@ -10,9 +11,7 @@ const StatusBadge = ({ status }) => {
     Closed: "badge-closed",
   };
 
-  const cls = map[status] || "badge-default";
-
-  return <span className={`status-badge ${cls}`}>{status}</span>;
+  return <span className={`status-badge ${map[status] || ""}`}>{status}</span>;
 };
 
 const SeverityBadge = ({ severity }) => {
@@ -22,14 +21,16 @@ const SeverityBadge = ({ severity }) => {
     high: "severity-high",
   };
 
-  const cls = map[severity] || "severity-low";
-
-  return <span className={`severity-badge ${cls}`}>{severity}</span>;
+  return (
+    <span className={`severity-badge ${map[severity] || ""}`}>{severity}</span>
+  );
 };
 
 const MyComplaints = () => {
   const [complaints, setComplaints] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
+  const [editId, setEditId] = useState(null);
+  const [description, setDescription] = useState("");
 
   const token = localStorage.getItem("token");
 
@@ -43,10 +44,9 @@ const MyComplaints = () => {
           },
         },
       );
-
       setComplaints(res.data);
     } catch (err) {
-      console.error("Fetch my complaints failed", err);
+      console.error("Fetch failed", err);
     }
   };
 
@@ -55,10 +55,54 @@ const MyComplaints = () => {
   }, []);
 
   const toggleExpand = (id) => {
-    if (expandedId === id) {
-      setExpandedId(null);
-    } else {
-      setExpandedId(id);
+    setExpandedId(expandedId === id ? null : id);
+  };
+
+  const startEdit = (c, e) => {
+    e.stopPropagation();
+    setEditId(c._id);
+    setExpandedId(c._id);
+    setDescription(c.description);
+  };
+
+  const handleUpdate = async (id) => {
+    try {
+      const res = await axios.put(
+        `${import.meta.env.VITE_API_URL}/api/complaints/${id}`,
+        { description },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      setComplaints((prev) => prev.map((c) => (c._id === id ? res.data : c)));
+
+      setEditId(null);
+    } catch (err) {
+      console.error("Update failed", err);
+    }
+  };
+
+  const handleDelete = async (id, e) => {
+    e.stopPropagation();
+
+    if (!window.confirm("Delete this complaint?")) return;
+
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_API_URL}/api/complaints/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      setComplaints((prev) => prev.filter((c) => c._id !== id));
+    } catch (err) {
+      console.error("Delete failed", err);
     }
   };
 
@@ -76,14 +120,14 @@ const MyComplaints = () => {
               <th>Severity</th>
               <th>Date</th>
               <th>Upvotes</th>
+              <th>Actions</th>
             </tr>
           </thead>
 
           <tbody>
             {complaints.map((c) => (
-              <>
+              <React.Fragment key={c._id}>
                 <tr
-                  key={c._id}
                   onClick={() => toggleExpand(c._id)}
                   style={{ cursor: "pointer" }}
                 >
@@ -105,26 +149,55 @@ const MyComplaints = () => {
                     <UpvoteButton
                       complaintId={c._id}
                       initialVotes={c.upvotesCount || 0}
+                      initialVoted={c.userHasUpvoted}
                     />
+                  </td>
+
+                  <td onClick={(e) => e.stopPropagation()}>
+                    <button onClick={(e) => startEdit(c, e)}>✏️</button>
+                    <button onClick={(e) => handleDelete(c._id, e)}>🗑️</button>
                   </td>
                 </tr>
 
                 {expandedId === c._id && (
                   <tr className="expanded-row">
-                    <td colSpan="6">
+                    <td colSpan="7">
                       <div className="complaint-details">
-                        <p>
-                          <strong>Description:</strong> {c.description}
-                        </p>
+                        {editId === c._id ? (
+                          <>
+                            <textarea
+                              value={description}
+                              onChange={(e) => setDescription(e.target.value)}
+                              style={{ width: "100%", minHeight: "80px" }}
+                            />
+
+                            <div style={{ marginTop: "10px" }}>
+                              <button onClick={() => handleUpdate(c._id)}>
+                                💾 Save
+                              </button>
+                              <button onClick={() => setEditId(null)}>
+                                ❌ Cancel
+                              </button>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <p>
+                              <strong>Description:</strong> {c.description}
+                            </p>
+
+                            <button onClick={(e) => startEdit(c, e)}>
+                              ✏️ Edit Description
+                            </button>
+                          </>
+                        )}
 
                         <p>
                           <strong>Hostel:</strong> {c.location?.hostel}
                         </p>
-
                         <p>
                           <strong>Block:</strong> {c.location?.block}
                         </p>
-
                         <p>
                           <strong>Room:</strong> {c.location?.room}
                         </p>
@@ -138,7 +211,7 @@ const MyComplaints = () => {
                     </td>
                   </tr>
                 )}
-              </>
+              </React.Fragment>
             ))}
           </tbody>
         </table>

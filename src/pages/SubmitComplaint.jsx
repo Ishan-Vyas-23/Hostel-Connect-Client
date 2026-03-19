@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import "../styles/submitComplaint.css";
 import React from "react";
 import axios from "axios";
 
 const SubmitComplaint = () => {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     title: "",
     category: "",
@@ -69,6 +72,7 @@ const SubmitComplaint = () => {
         category: "",
         description: "",
       });
+      navigate("/dashboard");
     } catch (err) {
       toast.error("Failed to submit complaint");
       console.log(err);
