@@ -1,16 +1,25 @@
+/* ===================================
+   PROFILE PAGE
+   =================================== */
+
 .profile-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 25px;
-  margin-bottom: 25px;
+  gap: 22px;
+  margin-bottom: 22px;
 }
 
+/* ===== PROFILE INFO CARD ===== */
 .profile-card {
-  background: white;
-  padding: 30px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: 30px 24px;
   border-radius: 12px;
   text-align: center;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-card);
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease;
 }
 
 .profile-avatar {
@@ -18,54 +27,218 @@
   height: 90px;
   border-radius: 50%;
   object-fit: cover;
-  margin-bottom: 15px;
+  margin-bottom: 14px;
+  border: 3px solid var(--border-color);
+  transition: border-color 0.25s ease;
+}
+
+.profile-card h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 6px;
 }
 
 .student-id {
-  color: #6b7280;
-  margin-bottom: 15px;
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  margin-bottom: 18px;
 }
 
 .edit-btn {
-  background: #5b5bd6;
-  color: white;
+  background: var(--accent);
+  color: #fff;
   border: none;
-  padding: 10px 18px;
+  padding: 10px 20px;
   border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
   cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease;
 }
 
+.edit-btn:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+.edit-btn:active {
+  transform: scale(0.97);
+}
+
+/* ===== HOSTEL DETAILS CARD ===== */
 .hostel-card {
-  background: white;
-  padding: 30px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: 28px 24px;
   border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-card);
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.hostel-card h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 8px;
 }
 
 .detail-row {
   display: flex;
   justify-content: space-between;
-  padding: 12px 0;
-  border-bottom: 1px solid #eee;
+  align-items: center;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--border-color);
+  gap: 12px;
+  transition: border-color 0.25s ease;
 }
 
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-row span:first-child {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+}
+
+.detail-row span:last-child {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  text-align: right;
+}
+
+/* ===== COMPLAINT STATS CARD ===== */
 .stats-card {
-  background: white;
-  padding: 30px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: 28px 24px;
   border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-card);
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.stats-card h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 20px;
 }
 
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  margin-top: 20px;
+  gap: 16px;
 }
 
 .stat-box {
-  background: #f7f7f7;
-  padding: 20px;
+  background: var(--bg-table-head);
+  border: 1px solid var(--border-color);
+  padding: 18px 14px;
   border-radius: 10px;
   text-align: center;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.stat-box:hover {
+  border-color: var(--accent);
+}
+
+.stat-box-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.stat-box-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* ===========================================
+   RESPONSIVE
+   =========================================== */
+
+/* ── Tablet (≤ 900px) ── */
+@media (max-width: 900px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── Mobile (≤ 600px) ── */
+@media (max-width: 600px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  .profile-card,
+  .hostel-card,
+  .stats-card {
+    padding: 22px 18px;
+    border-radius: 10px;
+  }
+
+  .profile-avatar {
+    width: 76px;
+    height: 76px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .stat-box {
+    padding: 16px 10px;
+  }
+
+  .stat-box-value {
+    font-size: 20px;
+  }
+
+  .detail-row span:first-child {
+    font-size: 12.5px;
+  }
+
+  .detail-row span:last-child {
+    font-size: 13px;
+  }
+}
+
+/* ── Small phones (≤ 380px) ── */
+@media (max-width: 380px) {
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .stat-box-value {
+    font-size: 18px;
+  }
+
+  .edit-btn {
+    width: 100%;
+  }
 }

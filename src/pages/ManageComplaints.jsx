@@ -172,7 +172,10 @@ const ManageComplaints = () => {
                           <strong>Room:</strong> {c.location?.room}
                         </p>
 
-                        <div style={{ marginTop: "10px" }}>
+                        <div
+                          style={{ marginBottom: "1rem" }}
+                          className="manage-cont"
+                        >
                           <select
                             value={statusDraft[c._id]}
                             onChange={(e) =>
@@ -189,26 +192,35 @@ const ManageComplaints = () => {
                             <option>Reopened</option>
                           </select>
                         </div>
-
-                        <textarea
-                          placeholder="Add resolution..."
-                          value={resolutionDraft[c._id]}
-                          onChange={(e) =>
-                            setResolutionDraft({
-                              ...resolutionDraft,
-                              [c._id]: e.target.value,
-                            })
-                          }
-                        />
-
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleUpdate(c._id);
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "0.5rem",
                           }}
                         >
-                          Save
-                        </button>
+                          <textarea
+                            className="form-textarea"
+                            placeholder="Add resolution..."
+                            value={resolutionDraft[c._id]}
+                            onChange={(e) =>
+                              setResolutionDraft({
+                                ...resolutionDraft,
+                                [c._id]: e.target.value,
+                              })
+                            }
+                          />
+
+                          <button
+                            className="btn-primary"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleUpdate(c._id);
+                            }}
+                          >
+                            Save
+                          </button>
+                        </div>
                       </div>
                     </td>
                   </tr>

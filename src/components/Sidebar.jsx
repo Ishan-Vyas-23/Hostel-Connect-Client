@@ -2,82 +2,96 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import "../styles/dashboard.css";
 
-const Sidebar = ({ role }) => {
+const Sidebar = ({ role, isOpen, onClose }) => {
   const canManage = ["admin", "warden", "staff"].includes(role);
 
   return (
-    <aside className="hc-sidebar">
-      <div className="hc-brand">HostelConnect</div>
+    <>
+      <div
+        className={`hc-sidebar-overlay ${isOpen ? "visible" : ""}`}
+        onClick={onClose}
+      />
 
-      <nav className="hc-nav">
-        <NavLink
-          to="/dashboard"
-          className={({ isActive }) =>
-            isActive ? "hc-nav-item active" : "hc-nav-item"
-          }
-        >
-          Dashboard
-        </NavLink>
+      <aside className={`hc-sidebar ${isOpen ? "open" : ""}`}>
+        <div className="hc-brand">HostelConnect</div>
 
-        <NavLink
-          to="/submit"
-          className={({ isActive }) =>
-            isActive ? "hc-nav-item active" : "hc-nav-item"
-          }
-        >
-          Submit Complaint
-        </NavLink>
+        <nav className="hc-nav">
+          <NavLink
+            to="/dashboard"
+            className={({ isActive }) =>
+              isActive ? "hc-nav-item active" : "hc-nav-item"
+            }
+            onClick={onClose}
+          >
+            📊 Dashboard
+          </NavLink>
 
-        <NavLink
-          to="/my-complaints"
-          className={({ isActive }) =>
-            isActive ? "hc-nav-item active" : "hc-nav-item"
-          }
-        >
-          My Complaints
-        </NavLink>
+          <NavLink
+            to="/submit"
+            className={({ isActive }) =>
+              isActive ? "hc-nav-item active" : "hc-nav-item"
+            }
+            onClick={onClose}
+          >
+            📝 Submit Complaint
+          </NavLink>
 
-        {canManage && (
-          <>
-            <NavLink
-              to="/manage-complaints"
-              className={({ isActive }) =>
-                isActive ? "hc-nav-item active" : "hc-nav-item"
-              }
-            >
-              Manage Complaints
-            </NavLink>
+          <NavLink
+            to="/my-complaints"
+            className={({ isActive }) =>
+              isActive ? "hc-nav-item active" : "hc-nav-item"
+            }
+            onClick={onClose}
+          >
+            📋 My Complaints
+          </NavLink>
 
-            <NavLink
-              to="/feedbacks"
-              className={({ isActive }) =>
-                isActive ? "hc-nav-item active" : "hc-nav-item"
-              }
-            >
-              Feedbacks
-            </NavLink>
-          </>
-        )}
+          {canManage && (
+            <>
+              <NavLink
+                to="/manage-complaints"
+                className={({ isActive }) =>
+                  isActive ? "hc-nav-item active" : "hc-nav-item"
+                }
+                onClick={onClose}
+              >
+                🛠 Manage Complaints
+              </NavLink>
 
-        <NavLink
-          to="/notifications"
-          className={({ isActive }) =>
-            isActive ? "hc-nav-item active" : "hc-nav-item"
-          }
-        >
-          Notifications
-        </NavLink>
+              <NavLink
+                to="/feedbacks"
+                className={({ isActive }) =>
+                  isActive ? "hc-nav-item active" : "hc-nav-item"
+                }
+                onClick={onClose}
+              >
+                💬 Feedbacks
+              </NavLink>
+            </>
+          )}
 
-        <NavLink
-          to="/profile"
-          className={({ isActive }) =>
-            isActive ? "hc-nav-item active" : "hc-nav-item"
-          }
-        >
-          Profile
-        </NavLink>
-      </nav>
-    </aside>
+          <NavLink
+            to="/notifications"
+            className={({ isActive }) =>
+              isActive ? "hc-nav-item active" : "hc-nav-item"
+            }
+            onClick={onClose}
+          >
+            🔔 Notifications
+          </NavLink>
+
+          <NavLink
+            to="/profile"
+            className={({ isActive }) =>
+              isActive ? "hc-nav-item active" : "hc-nav-item"
+            }
+            onClick={onClose}
+          >
+            👤 Profile
+          </NavLink>
+        </nav>
+      </aside>
+    </>
   );
 };
 

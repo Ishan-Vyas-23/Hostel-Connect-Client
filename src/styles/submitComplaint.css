@@ -1,3 +1,7 @@
+/* ===================================
+   SUBMIT COMPLAINT PAGE
+   =================================== */
+
 .submit-page {
   width: 100%;
 }
@@ -5,56 +9,147 @@
 .page-title {
   font-size: 28px;
   font-weight: 700;
+  color: var(--text-primary);
   margin-bottom: 20px;
+  letter-spacing: -0.3px;
 }
 
 .submit-card {
-  background: white;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 30px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-card);
   max-width: 900px;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease;
 }
 
 .submit-card h3 {
-  margin-bottom: 20px;
-  font-size: 22px;
+  margin: 0 0 22px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .submit-card form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 16px;
 }
 
 .submit-card label {
   font-weight: 600;
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 2px;
+  display: block;
 }
 
 .submit-card input,
 .submit-card select,
 .submit-card textarea {
-  padding: 14px;
+  width: 100%;
+  padding: 12px 14px;
   border-radius: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-input);
   font-size: 14px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.25s ease;
+  font-family: inherit;
+}
+
+.submit-card input::placeholder,
+.submit-card textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.submit-card input:focus,
+.submit-card select:focus,
+.submit-card textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
 .submit-card textarea {
-  resize: none;
+  resize: vertical;
+  min-height: 110px;
+}
+
+/* option elements in dark mode */
+.submit-card select option {
+  background: var(--bg-card);
+  color: var(--text-primary);
 }
 
 .submit-btn {
-  margin-top: 10px;
-  padding: 14px;
-  background: #0b1220;
-  color: white;
+  margin-top: 6px;
+  padding: 13px;
+  background: var(--accent);
+  color: #fff;
   border: none;
   border-radius: 10px;
   font-weight: 600;
+  font-size: 14.5px;
   cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.28);
 }
 
 .submit-btn:hover {
-  background: #111827;
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(108, 99, 255, 0.38);
+}
+
+.submit-btn:active {
+  transform: scale(0.98);
+  box-shadow: none;
+}
+
+.submit-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── Mobile ── */
+@media (max-width: 600px) {
+  .page-title {
+    font-size: 22px;
+  }
+
+  .submit-card {
+    padding: 20px 16px;
+    border-radius: 10px;
+  }
+
+  .submit-card h3 {
+    font-size: 17px;
+    margin-bottom: 16px;
+  }
+
+  .submit-card input,
+  .submit-card select,
+  .submit-card textarea {
+    padding: 11px 12px;
+    font-size: 13.5px;
+  }
+
+  .submit-btn {
+    padding: 12px;
+    font-size: 14px;
+  }
 }
