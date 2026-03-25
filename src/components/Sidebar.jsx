@@ -4,6 +4,7 @@ import "../styles/dashboard.css";
 
 const Sidebar = ({ role, isOpen, onClose }) => {
   const canManage = ["admin", "warden", "staff"].includes(role);
+  const canSubmit = ["admin", "resident", "staff"].includes(role);
 
   return (
     <>
@@ -26,7 +27,8 @@ const Sidebar = ({ role, isOpen, onClose }) => {
             📊 Dashboard
           </NavLink>
 
-          <NavLink
+          {canSubmit ? (
+            <NavLink
             to="/submit"
             className={({ isActive }) =>
               isActive ? "hc-nav-item active" : "hc-nav-item"
@@ -35,7 +37,9 @@ const Sidebar = ({ role, isOpen, onClose }) => {
           >
             📝 Submit Complaint
           </NavLink>
-
+          ) : null}
+          
+          {canSubmit ? (
           <NavLink
             to="/my-complaints"
             className={({ isActive }) =>
@@ -45,6 +49,7 @@ const Sidebar = ({ role, isOpen, onClose }) => {
           >
             📋 My Complaints
           </NavLink>
+          ) : null}
 
           {canManage && (
             <>
