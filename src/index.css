@@ -243,6 +243,24 @@ span {
 .btn-danger:hover {
   background: #dc2626;
 }
+.filter-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.filter-bar select {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.filter-bar button {
+  padding: 8px 14px;
+}
 
 /* ===== ICON BUTTON ===== */
 .icon-btn {

@@ -1,11 +1,13 @@
-import React from "react";
 import { NavLink } from "react-router-dom";
 import "../styles/dashboard.css";
+import { FaRegEye } from "react-icons/fa6";
+import { MdOutlineCreateNewFolder } from "react-icons/md";
+import { MdManageAccounts } from "react-icons/md";
 
 const Sidebar = ({ role, isOpen, onClose }) => {
   const canManage = ["admin", "warden", "staff"].includes(role);
-  const canSubmit = ["admin", "resident", "staff"].includes(role);
-
+  const canSubmit = ["resident", "staff"].includes(role);
+  const isAdmin = role === "admin";
   return (
     <>
       <div
@@ -29,27 +31,36 @@ const Sidebar = ({ role, isOpen, onClose }) => {
 
           {canSubmit ? (
             <NavLink
-            to="/submit"
-            className={({ isActive }) =>
-              isActive ? "hc-nav-item active" : "hc-nav-item"
-            }
-            onClick={onClose}
-          >
-            📝 Submit Complaint
-          </NavLink>
+              to="/submit"
+              className={({ isActive }) =>
+                isActive ? "hc-nav-item active" : "hc-nav-item"
+              }
+              onClick={onClose}
+            >
+              <MdOutlineCreateNewFolder /> Submit Complaint
+            </NavLink>
           ) : null}
-          
+
           {canSubmit ? (
+            <NavLink
+              to="/my-complaints"
+              className={({ isActive }) =>
+                isActive ? "hc-nav-item active" : "hc-nav-item"
+              }
+              onClick={onClose}
+            >
+              📋 My Complaints
+            </NavLink>
+          ) : null}
           <NavLink
-            to="/my-complaints"
+            to="/notices"
             className={({ isActive }) =>
               isActive ? "hc-nav-item active" : "hc-nav-item"
             }
             onClick={onClose}
           >
-            📋 My Complaints
+            <FaRegEye /> View Notices
           </NavLink>
-          ) : null}
 
           {canManage && (
             <>
@@ -62,6 +73,37 @@ const Sidebar = ({ role, isOpen, onClose }) => {
               >
                 🛠 Manage Complaints
               </NavLink>
+              <NavLink
+                to="/create-notice"
+                className={({ isActive }) =>
+                  isActive ? "hc-nav-item active" : "hc-nav-item"
+                }
+                onClick={onClose}
+              >
+                <MdOutlineCreateNewFolder /> Publish Notice
+              </NavLink>
+              {isAdmin ? (
+                <NavLink
+                  to="/admin/users"
+                  className={({ isActive }) =>
+                    isActive ? "hc-nav-item active" : "hc-nav-item"
+                  }
+                  onClick={onClose}
+                >
+                  <MdManageAccounts /> Manage Profiles
+                </NavLink>
+              ) : null}
+              {isAdmin ? (
+                <NavLink
+                  to="/admin/create-user"
+                  className={({ isActive }) =>
+                    isActive ? "hc-nav-item active" : "hc-nav-item"
+                  }
+                  onClick={onClose}
+                >
+                  + Create User
+                </NavLink>
+              ) : null}
 
               <NavLink
                 to="/feedbacks"

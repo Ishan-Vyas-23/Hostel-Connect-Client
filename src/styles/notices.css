@@ -1,0 +1,111 @@
+/* ===================================
+   NOTICES PAGE
+   =================================== */
+
+.notices-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 4px;
+}
+
+.notice-card {
+  background: var(--bg-table-head);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--accent);
+  border-radius: 10px;
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.15s ease;
+}
+
+.notice-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.dark .notice-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.notice-card h4 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.notice-card p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ===== META ROW ===== */
+.notice-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.notice-meta span {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* dot separator between meta items */
+.notice-meta span:not(:last-child)::after {
+  content: "·";
+  margin-left: 10px;
+  color: var(--text-muted);
+}
+
+/* role pill */
+.notice-meta .notice-role {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+/* ===== EMPTY STATE ===== */
+.notices-empty {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.notices-empty-icon {
+  font-size: 36px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+/* ── Mobile (≤ 600px) ── */
+@media (max-width: 600px) {
+  .notice-card {
+    padding: 16px 16px;
+    border-radius: 8px;
+  }
+
+  .notice-card h4 {
+    font-size: 14px;
+  }
+
+  .notice-card p {
+    font-size: 13px;
+  }
+}

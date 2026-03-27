@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import UpvoteButton from "../components/upvoteButton";
+import { FaFilter } from "react-icons/fa";
 
 const StatusBadge = ({ status }) => {
   const map = {
-    High: "badge-high",
-    Resolved: "badge-resolved",
-    Pending: "badge-pending",
+    Submitted: "badge-submitted",
     "In Progress": "badge-progress",
+    Resolved: "badge-resolved",
+    Closed: "badge-closed",
   };
 
-  const cls = map[status] || "badge-default";
-
-  return <span className={`status-badge ${cls}`}>{status}</span>;
+  return <span className={`status-badge ${map[status] || ""}`}>{status}</span>;
 };
+
 const SeverityBadge = ({ severity }) => {
   const map = {
     low: "severity-low",
@@ -21,13 +21,19 @@ const SeverityBadge = ({ severity }) => {
     high: "severity-high",
   };
 
-  const cls = map[severity] || "severity-low";
-
-  return <span className={`severity-badge ${cls}`}>{severity}</span>;
+  return (
+    <span className={`severity-badge ${map[severity] || ""}`}>{severity}</span>
+  );
 };
+
 const Dashboard = () => {
+  const token = localStorage.getItem("token");
+
   const [complaints, setComplaints] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
+
+  const [category, setCategory] = useState("");
+  const [status, setStatus] = useState("");
 
   const [totals, setTotals] = useState({
     total: 0,
@@ -35,48 +41,67 @@ const Dashboard = () => {
     resolved: 0,
   });
 
+  const fetchComplaints = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/complaints`,
+        {
+          params: {
+            sort: "priority",
+            category,
+            status,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const data = res.data;
+
+      setComplaints(data);
+
+      setTotals({
+        total: data.length,
+        inProgress: data.filter((c) => c.status === "In Progress").length,
+        resolved: data.filter((c) => c.status === "Resolved").length,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
-    const fetchComplaints = async () => {
-      try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/complaints?sort=priority`,
-        );
-
-        const data = res.data;
-
-        setComplaints(data);
-
-        const total = data.length;
-
-        const inProgress = data.filter(
-          (c) => c.status === "In Progress",
-        ).length;
-
-        const resolved = data.filter((c) => c.status === "Resolved").length;
-
-        setTotals({
-          total,
-          inProgress,
-          resolved,
-        });
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
     fetchComplaints();
-  }, []);
+  }, [category, status]);
 
   const toggleExpand = (id) => {
-    if (expandedId === id) {
-      setExpandedId(null);
-    } else {
-      setExpandedId(id);
-    }
+    setExpandedId(expandedId === id ? null : id);
   };
 
   return (
     <>
+      <div className="filter-bar">
+        <FaFilter />
+        <select value={category} onChange={(e) => setCategory(e.target.value)}>
+          <option value="">All Categories</option>
+          <option value="Electrical">Electrical</option>
+          <option value="Plumbing">Plumbing</option>
+          <option value="Internet">Internet</option>
+          <option value="Mess">Mess</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <select value={status} onChange={(e) => setStatus(e.target.value)}>
+          <option value="">All Status</option>
+          <option value="Submitted">Submitted</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Resolved">Resolved</option>
+          <option value="Closed">Closed</option>
+        </select>
+      </div>
+
+      {/* ===== CARDS ===== */}
       <section className="hc-cards">
         <div className="card">
           <div className="card-label">Total Complaints</div>
@@ -94,8 +119,9 @@ const Dashboard = () => {
         </div>
       </section>
 
+      {/* ===== TABLE ===== */}
       <section className="hc-recent">
-        <h3>Recent Complaints</h3>
+        <h3>Complaints Overview</h3>
 
         <div className="table-wrap">
           <table className="hc-table">
@@ -118,7 +144,6 @@ const Dashboard = () => {
                     style={{ cursor: "pointer" }}
                   >
                     <td>{c.author?.name || "Anonymous"}</td>
-
                     <td>{c.category}</td>
 
                     <td>
@@ -135,10 +160,12 @@ const Dashboard = () => {
                       <UpvoteButton
                         complaintId={c._id}
                         initialVotes={c.upvotesCount || 0}
+                        initialVoted={c.userHasUpvoted}
                       />
                     </td>
                   </tr>
 
+                  {/* EXPANDED */}
                   {expandedId === c._id && (
                     <tr className="expanded-row">
                       <td colSpan="6">
@@ -163,9 +190,9 @@ const Dashboard = () => {
                             <strong>Room:</strong> {c.location?.room}
                           </p>
 
-                          {c.adminFeedback && (
+                          {c.resolution && (
                             <p>
-                              <strong>Admin Feedback:</strong> {c.adminFeedback}
+                              <strong>Resolution:</strong> {c.resolution.text}
                             </p>
                           )}
                         </div>

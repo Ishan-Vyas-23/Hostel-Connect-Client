@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import UpvoteButton from "../components/upvoteButton";
 import { CiEdit } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
+import { FaFilter } from "react-icons/fa";
 
 const StatusBadge = ({ status }) => {
   const map = {
@@ -34,6 +35,9 @@ const MyComplaints = () => {
   const [editId, setEditId] = useState(null);
   const [description, setDescription] = useState("");
 
+  const [category, setCategory] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+
   const [feedbackOpenId, setFeedbackOpenId] = useState(null);
   const [feedbackRating, setFeedbackRating] = useState("5");
   const [feedbackComment, setFeedbackComment] = useState("");
@@ -49,6 +53,10 @@ const MyComplaints = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          params: {
+            category,
+            status: statusFilter,
+          },
         },
       );
 
@@ -60,7 +68,7 @@ const MyComplaints = () => {
 
   useEffect(() => {
     fetchComplaints();
-  }, []);
+  }, [category, statusFilter]);
 
   const toggleExpand = (id) => {
     setExpandedId(expandedId === id ? null : id);
@@ -90,7 +98,7 @@ const MyComplaints = () => {
       setEditId(null);
       toast.success("Complaint updated");
     } catch (err) {
-      console.error("Update failed", err);
+      console.error(err);
       toast.error("Update failed");
     }
   };
@@ -113,7 +121,7 @@ const MyComplaints = () => {
       setComplaints((prev) => prev.filter((c) => c._id !== id));
       toast.success("Complaint deleted");
     } catch (err) {
-      console.error("Delete failed", err);
+      console.error(err);
       toast.error("Delete failed");
     }
   };
@@ -148,12 +156,7 @@ const MyComplaints = () => {
 
       setComplaints((prev) =>
         prev.map((c) =>
-          c._id === complaintId
-            ? {
-                ...c,
-                myFeedback: newFeedback,
-              }
-            : c,
+          c._id === complaintId ? { ...c, myFeedback: newFeedback } : c,
         ),
       );
 
@@ -162,16 +165,40 @@ const MyComplaints = () => {
       setFeedbackRating("5");
       toast.success("Feedback submitted");
     } catch (err) {
-      console.error("Feedback submit failed", err);
-      toast.error(err.response?.data?.message || "Feedback submit failed");
+      console.error(err);
+      toast.error(err.response?.data?.message || "Feedback failed");
     } finally {
       setFeedbackSubmittingId(null);
     }
   };
+  console.log(complaints);
 
   return (
     <section className="hc-recent">
       <h3>My Complaints</h3>
+
+      <div className="filter-bar">
+        <FaFilter />
+        <select value={category} onChange={(e) => setCategory(e.target.value)}>
+          <option value="">All Categories</option>
+          <option value="Electrical">Electrical</option>
+          <option value="Plumbing">Plumbing</option>
+          <option value="Internet">Internet</option>
+          <option value="Mess">Mess</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+        >
+          <option value="">All Status</option>
+          <option value="Submitted">Submitted</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Resolved">Resolved</option>
+          <option value="Closed">Closed</option>
+        </select>
+      </div>
 
       <div className="table-wrap">
         <table className="hc-table">
@@ -190,10 +217,7 @@ const MyComplaints = () => {
           <tbody>
             {complaints.map((c) => (
               <React.Fragment key={c._id}>
-                <tr
-                  onClick={() => toggleExpand(c._id)}
-                  style={{ cursor: "pointer" }}
-                >
+                <tr onClick={() => toggleExpand(c._id)}>
                   <td>{c.title}</td>
                   <td>{c.category}</td>
                   <td>
@@ -212,21 +236,11 @@ const MyComplaints = () => {
                   </td>
 
                   <td onClick={(e) => e.stopPropagation()}>
-                    <button
-                      style={{ borderRadius: "5px" }}
-                      onClick={(e) => startEdit(c, e)}
-                    >
-                      <CiEdit
-                        style={{ fontSize: "1.2rem", cursor: "pointer" }}
-                      />
+                    <button onClick={(e) => startEdit(c, e)}>
+                      <CiEdit />
                     </button>
-                    <button
-                      style={{ borderRadius: "5px" }}
-                      onClick={(e) => handleDelete(c._id, e)}
-                    >
-                      <MdDelete
-                        style={{ fontSize: "1.2rem", cursor: "pointer" }}
-                      />
+                    <button onClick={(e) => handleDelete(c._id, e)}>
+                      <MdDelete />
                     </button>
                   </td>
                 </tr>
@@ -236,31 +250,29 @@ const MyComplaints = () => {
                     <td colSpan="7">
                       <div className="complaint-details">
                         {editId === c._id ? (
-                          <>
-                            <div className="form-container">
-                              <textarea
-                                className="form-textarea"
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                              />
+                          <div className="form-container">
+                            <textarea
+                              className="form-textarea"
+                              value={description}
+                              onChange={(e) => setDescription(e.target.value)}
+                            />
 
-                              <div style={{ display: "flex", gap: "10px" }}>
-                                <button
-                                  className="btn btn-primary"
-                                  onClick={() => handleUpdate(c._id)}
-                                >
-                                  Save
-                                </button>
+                            <div style={{ display: "flex", gap: "10px" }}>
+                              <button
+                                className="btn-primary"
+                                onClick={() => handleUpdate(c._id)}
+                              >
+                                Save
+                              </button>
 
-                                <button
-                                  className="btn btn-secondary"
-                                  onClick={() => setEditId(null)}
-                                >
-                                  Cancel
-                                </button>
-                              </div>
+                              <button
+                                className="btn-secondary"
+                                onClick={() => setEditId(null)}
+                              >
+                                Cancel
+                              </button>
                             </div>
-                          </>
+                          </div>
                         ) : (
                           <>
                             <p>
@@ -292,6 +304,7 @@ const MyComplaints = () => {
                           </p>
                         )}
 
+                        {/* FEEDBACK */}
                         <div style={{ marginTop: "16px" }}>
                           {c.status === "Resolved" && !c.myFeedback && (
                             <>
@@ -305,8 +318,6 @@ const MyComplaints = () => {
                               ) : (
                                 <div className="feedback-box">
                                   <div className="form-container">
-                                    <label>Rating</label>
-
                                     <select
                                       className="form-select"
                                       value={feedbackRating}
@@ -323,7 +334,7 @@ const MyComplaints = () => {
 
                                     <textarea
                                       className="form-textarea"
-                                      placeholder="Write your feedback..."
+                                      placeholder="Write feedback..."
                                       value={feedbackComment}
                                       onChange={(e) =>
                                         setFeedbackComment(e.target.value)
@@ -331,15 +342,12 @@ const MyComplaints = () => {
                                     />
 
                                     <button
-                                      className="btn btn-primary"
+                                      className="btn-primary"
                                       onClick={() =>
                                         handleSubmitFeedback(c._id)
                                       }
-                                      disabled={feedbackSubmittingId === c._id}
                                     >
-                                      {feedbackSubmittingId === c._id
-                                        ? "Submitting..."
-                                        : "Submit Feedback"}
+                                      Submit Feedback
                                     </button>
                                   </div>
                                 </div>
@@ -348,28 +356,13 @@ const MyComplaints = () => {
                           )}
 
                           {c.myFeedback && (
-                            <div style={{ marginTop: "12px" }}>
+                            <div>
                               <p>
                                 <strong>Your Feedback:</strong>
                               </p>
                               <p>Rating: {c.myFeedback.rating}/5</p>
-                              <p>
-                                Comment: {c.myFeedback.comment || "No comment"}
-                              </p>
-                              <p>
-                                Submitted on:{" "}
-                                {new Date(
-                                  c.myFeedback.createdAt,
-                                ).toLocaleString()}
-                              </p>
+                              <p>{c.myFeedback.comment}</p>
                             </div>
-                          )}
-
-                          {c.status !== "Resolved" && !c.myFeedback && (
-                            <p style={{ marginTop: "10px" }}>
-                              Feedback becomes available after the complaint is
-                              resolved.
-                            </p>
                           )}
                         </div>
                       </div>

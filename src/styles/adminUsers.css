@@ -1,0 +1,246 @@
+/* ===================================
+   ADMIN USERS PAGE
+   =================================== */
+
+/* ===== FILTER BAR ===== */
+.filter-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filter-bar select {
+  padding: 9px 34px 9px 13px;
+  border-radius: 8px;
+  border: 1px solid var(--border-input);
+  font-size: 13.5px;
+  font-weight: 500;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-family: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.25s ease;
+}
+
+.filter-bar select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.filter-bar select option {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+/* ===== ACTION BUTTONS ===== */
+.action-btn {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--border-color);
+  border-radius: 7px;
+  background: var(--bg-table-head);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.1s ease;
+}
+
+.action-btn:hover {
+  transform: translateY(-1px);
+}
+
+.action-btn.edit:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.action-btn.delete:hover {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: #ef4444;
+}
+
+.action-btns {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ===== INLINE EDIT ROW ===== */
+.edit-row td {
+  background: var(--bg-table-head);
+  padding: 16px !important;
+  border-bottom: 2px solid var(--accent) !important;
+}
+
+.edit-form {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr) auto;
+  gap: 10px;
+  align-items: end;
+}
+
+.edit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.edit-field label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--text-muted);
+}
+
+.edit-form input {
+  width: 100%;
+  padding: 9px 11px;
+  border-radius: 7px;
+  border: 1px solid var(--border-input);
+  font-size: 13.5px;
+  background: var(--bg-input);
+  color: var(--text-primary);
+  font-family: inherit;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.edit-form input::placeholder {
+  color: var(--text-muted);
+}
+
+.edit-form input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.edit-form-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-save {
+  padding: 9px 16px;
+  border-radius: 7px;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease;
+}
+
+.btn-save:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+.btn-cancel {
+  padding: 9px 14px;
+  border-radius: 7px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-table-head);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.btn-cancel:hover {
+  background: var(--border-color);
+  color: var(--text-primary);
+}
+
+/* ===== ROLE BADGE ===== */
+.role-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.role-resident {
+  background: var(--badge-submitted-bg);
+  color: var(--badge-submitted-text);
+}
+
+.role-warden {
+  background: var(--badge-pending-bg);
+  color: var(--badge-pending-text);
+}
+
+.role-staff {
+  background: var(--badge-resolved-bg);
+  color: var(--badge-resolved-text);
+}
+
+.role-admin {
+  background: var(--badge-high-bg);
+  color: var(--badge-high-text);
+}
+
+/* ── Tablet (≤ 900px) ── */
+@media (max-width: 900px) {
+  .edit-form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .edit-form-actions {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ── Mobile (≤ 600px) ── */
+@media (max-width: 600px) {
+  .filter-bar {
+    gap: 8px;
+  }
+
+  .filter-bar select {
+    flex: 1;
+    font-size: 13px;
+  }
+
+  .edit-form {
+    grid-template-columns: 1fr;
+  }
+
+  .edit-form-actions {
+    grid-column: 1;
+  }
+
+  .action-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+}

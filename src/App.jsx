@@ -10,6 +10,10 @@ import Profile from "./pages/Profile";
 import Notifications from "./pages/Notifications";
 import ManageComplaints from "./pages/ManageComplaints";
 import Feedbacks from "./pages/Feedbacks";
+import AdminUsers from "./pages/AdminUsers";
+import CreateUser from "./pages/CreateUser";
+import CreateNotice from "./pages/createNotice";
+import Notices from "./pages/Notices";
 
 const App = () => {
   return (
@@ -26,6 +30,10 @@ const App = () => {
           <Route path="notifications" element={<Notifications />} />
           <Route path="/manage-complaints" element={<ManageComplaints />} />
           <Route path="/feedbacks" element={<Feedbacks />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/create-user" element={<CreateUser />} />
+          <Route path="/notices" element={<Notices />} />
+          <Route path="/create-notice" element={<CreateNotice />} />
         </Route>
 
         {/* fallback */}

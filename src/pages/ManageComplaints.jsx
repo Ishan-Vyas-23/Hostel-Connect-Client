@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { FaFilter } from "react-icons/fa";
+import "../styles/manageComplaints.css";
 
 const StatusBadge = ({ status }) => {
   const map = {
@@ -31,6 +33,10 @@ const ManageComplaints = () => {
   const [expandedId, setExpandedId] = useState(null);
   const [statusDraft, setStatusDraft] = useState({});
   const [resolutionDraft, setResolutionDraft] = useState({});
+
+  const [category, setCategory] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+
   const [role, setRole] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -55,9 +61,14 @@ const ManageComplaints = () => {
       }
 
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/complaints/manage?sort=priority`,
+        `${import.meta.env.VITE_API_URL}/api/complaints/manage`,
         {
           headers: { Authorization: `Bearer ${token}` },
+          params: {
+            sort: "priority",
+            category,
+            status: statusFilter,
+          },
         },
       );
 
@@ -83,7 +94,7 @@ const ManageComplaints = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [category, statusFilter]);
 
   const toggleExpand = (id) => {
     setExpandedId(expandedId === id ? null : id);
@@ -91,6 +102,10 @@ const ManageComplaints = () => {
 
   const handleUpdate = async (id) => {
     try {
+      if (statusDraft[id] === "🛠") {
+        toast.error("select an update status");
+        return;
+      }
       const res = await axios.patch(
         `${import.meta.env.VITE_API_URL}/api/complaints/${id}/status`,
         {
@@ -125,12 +140,38 @@ const ManageComplaints = () => {
     <section className="hc-recent">
       <h3>Manage Complaints</h3>
 
+      <div className="filter-bar">
+        <FaFilter />
+        <select value={category} onChange={(e) => setCategory(e.target.value)}>
+          <option value="">All Categories</option>
+          <option value="Electrical">Electrical</option>
+          <option value="Plumbing">Plumbing</option>
+          <option value="Internet">Internet</option>
+          <option value="Mess">Mess</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+        >
+          <option value="">All Status</option>
+          <option value="Submitted">Submitted</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Resolved">Resolved</option>
+          <option value="Closed">Closed</option>
+          <option value="Reopened">Reopened</option>
+        </select>
+      </div>
+
+      {/* ===== TABLE ===== */}
       <div className="table-wrap">
         <table className="hc-table">
           <thead>
             <tr>
               <th>Author</th>
               <th>Title</th>
+              <th>Category</th>
               <th>Status</th>
               <th>Severity</th>
               <th>Date</th>
@@ -144,6 +185,7 @@ const ManageComplaints = () => {
                 <tr key={c._id} onClick={() => toggleExpand(c._id)}>
                   <td>{c.author?.name || "Anonymous"}</td>
                   <td>{c.title}</td>
+                  <td>{c.category}</td>
                   <td>
                     <StatusBadge status={c.status} />
                   </td>
@@ -161,7 +203,6 @@ const ManageComplaints = () => {
                         <p>
                           <strong>Description:</strong> {c.description}
                         </p>
-
                         <p>
                           <strong>Hostel:</strong> {c.location?.hostel}
                         </p>
@@ -172,33 +213,26 @@ const ManageComplaints = () => {
                           <strong>Room:</strong> {c.location?.room}
                         </p>
 
-                        <div
-                          style={{ marginBottom: "1rem" }}
-                          className="manage-cont"
-                        >
-                          <select
-                            value={statusDraft[c._id]}
-                            onChange={(e) =>
-                              setStatusDraft({
-                                ...statusDraft,
-                                [c._id]: e.target.value,
-                              })
-                            }
-                          >
-                            <option>Submitted</option>
-                            <option>In Progress</option>
-                            <option>Resolved</option>
-                            <option>Closed</option>
-                            <option>Reopened</option>
-                          </select>
-                        </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "0.5rem",
-                          }}
-                        >
+                        <div className="manage-section">
+                          <div className="manage-cont">
+                            <select
+                              value={statusDraft[c._id]}
+                              onChange={(e) =>
+                                setStatusDraft({
+                                  ...statusDraft,
+                                  [c._id]: e.target.value,
+                                })
+                              }
+                            >
+                              <option>🛠</option>
+                              <option>In Progress</option>
+                              <option>Resolved</option>
+                              <option>Closed</option>
+                              <option>Reopened</option>
+                            </select>
+                          </div>
+
+                          {/* RESOLUTION */}
                           <textarea
                             className="form-textarea"
                             placeholder="Add resolution..."
@@ -221,6 +255,7 @@ const ManageComplaints = () => {
                             Save
                           </button>
                         </div>
+                        {/* STATUS UPDATE */}
                       </div>
                     </td>
                   </tr>
