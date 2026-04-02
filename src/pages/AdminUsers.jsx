@@ -23,30 +23,46 @@ const AdminUsers = () => {
     year: "",
   });
 
+  const [enrolmentSearch, setEnrolmentSearch] = useState("");
+
   const token = localStorage.getItem("token");
 
+  // 🚀 FETCH USERS
   const fetchUsers = async () => {
     try {
       const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/users`, {
         headers: { Authorization: `Bearer ${token}` },
-        params: { role, hostel },
+        params: {
+          role,
+          hostel,
+          enrolmentNo: enrolmentSearch, // 🔥 THIS WAS MISSING
+        },
       });
+
       setUsers(res.data);
     } catch (err) {
       console.error(err);
     }
   };
 
+  // 🧠 debounce (avoid 100 API calls while typing like a maniac)
   useEffect(() => {
-    fetchUsers();
-  }, [role, hostel]);
+    const delay = setTimeout(() => {
+      fetchUsers();
+    }, 300);
 
+    return () => clearTimeout(delay);
+  }, [role, hostel, enrolmentSearch]);
+
+  // ❌ DELETE USER
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this user?")) return;
+
     try {
       await axios.delete(`${import.meta.env.VITE_API_URL}/api/users/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       setUsers((prev) => prev.filter((u) => u._id !== id));
       toast.success("User deleted");
     } catch {
@@ -54,6 +70,7 @@ const AdminUsers = () => {
     }
   };
 
+  // ✏️ EDIT START
   const startEdit = (u) => {
     setEditId(u._id);
     setForm({
@@ -65,6 +82,7 @@ const AdminUsers = () => {
     });
   };
 
+  // 💾 UPDATE USER
   const handleUpdate = async (id) => {
     try {
       const res = await axios.put(
@@ -72,6 +90,7 @@ const AdminUsers = () => {
         form,
         { headers: { Authorization: `Bearer ${token}` } },
       );
+
       setUsers((prev) => prev.map((u) => (u._id === id ? res.data : u)));
       setEditId(null);
       toast.success("Updated");
@@ -84,7 +103,7 @@ const AdminUsers = () => {
     <section className="hc-recent">
       <h3>Manage Users</h3>
 
-      {/* FILTERS */}
+      {/* 🔍 FILTER BAR */}
       <div className="filter-bar">
         <select value={role} onChange={(e) => setRole(e.target.value)}>
           <option value="">All Roles</option>
@@ -101,6 +120,15 @@ const AdminUsers = () => {
           <option value="C">Hostel C</option>
           <option value="D">Hostel D</option>
         </select>
+
+        {/* 🔥 SEARCH INPUT */}
+        <input
+          type="text"
+          placeholder="Search by Enrolment No"
+          value={enrolmentSearch}
+          onChange={(e) => setEnrolmentSearch(e.target.value)}
+          className="search-input"
+        />
       </div>
 
       <div className="table-wrap">
@@ -117,8 +145,6 @@ const AdminUsers = () => {
 
           <tbody>
             {users.map((u) => (
-              /* React.Fragment lets us render TWO sibling <tr>s per user
-                 without a wrapping element — fixes the invalid nested-tr bug */
               <React.Fragment key={u._id}>
                 <tr>
                   <td>{u.name}</td>
@@ -134,14 +160,12 @@ const AdminUsers = () => {
                       <button
                         className="action-btn edit"
                         onClick={() => startEdit(u)}
-                        title="Edit"
                       >
                         ✏️
                       </button>
                       <button
                         className="action-btn delete"
                         onClick={() => handleDelete(u._id)}
-                        title="Delete"
                       >
                         🗑️
                       </button>
@@ -149,63 +173,44 @@ const AdminUsers = () => {
                   </td>
                 </tr>
 
-                {/* Inline edit row — only shown for the active user */}
                 {editId === u._id && (
                   <tr className="edit-row">
                     <td colSpan="5">
                       <div className="edit-form">
-                        <div className="edit-field">
-                          <label>Hostel</label>
-                          <input
-                            placeholder="e.g. A"
-                            value={form.hostel}
-                            onChange={(e) =>
-                              setForm({ ...form, hostel: e.target.value })
-                            }
-                          />
-                        </div>
-                        <div className="edit-field">
-                          <label>Block</label>
-                          <input
-                            placeholder="e.g. B"
-                            value={form.block}
-                            onChange={(e) =>
-                              setForm({ ...form, block: e.target.value })
-                            }
-                          />
-                        </div>
-                        <div className="edit-field">
-                          <label>Room</label>
-                          <input
-                            placeholder="e.g. 301"
-                            value={form.room}
-                            onChange={(e) =>
-                              setForm({ ...form, room: e.target.value })
-                            }
-                          />
-                        </div>
-                        <div className="edit-field">
-                          <label>Phone</label>
-                          <input
-                            placeholder="e.g. 9876543210"
-                            value={form.phone}
-                            onChange={(e) =>
-                              setForm({ ...form, phone: e.target.value })
-                            }
-                          />
-                        </div>
+                        <input
+                          placeholder="Hostel"
+                          value={form.hostel}
+                          onChange={(e) =>
+                            setForm({ ...form, hostel: e.target.value })
+                          }
+                        />
+                        <input
+                          placeholder="Block"
+                          value={form.block}
+                          onChange={(e) =>
+                            setForm({ ...form, block: e.target.value })
+                          }
+                        />
+                        <input
+                          placeholder="Room"
+                          value={form.room}
+                          onChange={(e) =>
+                            setForm({ ...form, room: e.target.value })
+                          }
+                        />
+                        <input
+                          placeholder="Phone"
+                          value={form.phone}
+                          onChange={(e) =>
+                            setForm({ ...form, phone: e.target.value })
+                          }
+                        />
 
                         <div className="edit-form-actions">
-                          <button
-                            className="btn-save"
-                            onClick={() => handleUpdate(u._id)}
-                          >
+                          <button onClick={() => handleUpdate(u._id)}>
                             Save
                           </button>
-                          <button
-                            className="btn-cancel"
-                            onClick={() => setEditId(null)}
-                          >
+                          <button onClick={() => setEditId(null)}>
                             Cancel
                           </button>
                         </div>
