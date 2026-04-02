@@ -3,6 +3,7 @@ import "../styles/dashboard.css";
 import { FaRegEye } from "react-icons/fa6";
 import { MdOutlineCreateNewFolder } from "react-icons/md";
 import { MdManageAccounts } from "react-icons/md";
+import { IoIosAddCircleOutline } from "react-icons/io";
 
 const Sidebar = ({ role, isOpen, onClose }) => {
   const canManage = ["admin", "warden", "staff"].includes(role);
@@ -101,7 +102,7 @@ const Sidebar = ({ role, isOpen, onClose }) => {
                   }
                   onClick={onClose}
                 >
-                  + Create User
+                  <IoIosAddCircleOutline /> Create User
                 </NavLink>
               ) : null}
 
